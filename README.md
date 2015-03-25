@@ -27,7 +27,7 @@ This is the new parent of all com-turnguard-rww (Read Write Web) activity.
        `$ chmod +x *.sh`<br/>
     * Setup APR (the Apache Portable Runtime) and Tomcat Native Support.
     
-      * Install libapr and libapr-devel using the linux package manager, on OpenSuse these packages are called libapr1 and libapr1-devel, on ubuntu libapr1 and libapr1-dev respectivly [xx][xx]. Additionally install OpenSSL development headers and jni development headers. Here [xx] is the complete list of requirements.
+      * Install libapr and libapr-devel using the linux package manager, on OpenSuse these packages are called libapr1 and libapr1-devel, on ubuntu libapr1 and libapr1-dev respectivly [1][2]. Additionally install OpenSSL development headers and jni development headers. Here [3] is the complete list of requirements.
       * Locate "apr-1-config", which is usually at /usr/bin. It is needed to build Tomcat Native Support
       * Build Tomcat Native Support
        
@@ -106,11 +106,15 @@ This is the new parent of all com-turnguard-rww (Read Write Web) activity.
         
       * Point your browser to https://localhost:8443/webid-verification
         This should first bring up a popup that let's you choose your browser certificate. After you have chosen a certificate, you should either see an error page in case something went wrong, or a success page, displaying a couple of facts from your webID.
-
-
-[xx] http://software.opensuse.org/package/libapr1
-[xx] https://launchpad.net/ubuntu/+source/apr
-[xx] https://tomcat.apache.org/tomcat-7.0-doc/apr.html#Linux
-    
-    
+        
+    * Play.
+      * Remove your role triples from ${tomcat-parent-directory}/apache-tomcat-7.0.59/conf/tomcat-users.rdf and restart the server and try to log in again (Note that firefox is capabale of deleting "active logins" in the preferences section otherwise you might need to clear cookies and cache). Or..
+      * Open web.xml (${tomcat-parent-directory}/webapps/webid-verification/WEB-INF/web.xml) and checkout the security configuration. By default the url-pattern is "*". You could create a new directory inside the application's directory and protect only this directory by changing the url-pattern. See tomcat docs for details about security-constraints.
+    * Next
+      * Tutorial on using virtuoso as UserDatabase (instead of the file tomcat-users.rdf)
+      * Adaptions for other servlet engines like WebSphere and friends..
       
+
+* [1] http://software.opensuse.org/package/libapr1
+* [2] https://launchpad.net/ubuntu/+source/apr
+* [3] https://tomcat.apache.org/tomcat-7.0-doc/apr.html#Linux
