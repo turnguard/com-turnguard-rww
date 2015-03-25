@@ -18,5 +18,6 @@
         <module>com-turnguard-rww-webid-realm-api</module>
         <module>com-turnguard-rww-webid-realm-tomcat</module>
         <module>com-turnguard-rww-webid-realm-database-impl-virtuoso</module>
+    <module>com-turnguard-rww-webid-verification-webapp</module>
   </modules>
 </project>
