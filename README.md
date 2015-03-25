@@ -38,6 +38,9 @@ This is the new parent of all com-turnguard-rww (Read Write Web) activity.
          `$ make`<br/>
          `$ sudo make install`<br/>
 
+         Usually libtcnative will be installed to /usr/local/apr/lib. You can now either setup or LD_LIBRARY_PATH
+         or simply create a symlink to libtcnative-1.so inside your lib directory (lib or lib64) in case it is not already there.
+
 
 
 
