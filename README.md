@@ -57,7 +57,7 @@ This is the new parent of all com-turnguard-rww (Read Write Web) activity.
       `$ cd ${tomcat-parent-directory}/apache-tomcat-7.0.59/conf`<br/>
       `$ vim server.xml`<br/>
       
-      paste the following snippet and save the file<br/>
+      paste the following snippet and save the file replacing the value for SSLPassword with the password that was used in the previous step<br/>
       
       ```xml
         <Connector
