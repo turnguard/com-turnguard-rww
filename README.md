@@ -72,8 +72,29 @@ This is the new parent of all com-turnguard-rww (Read Write Web) activity.
           SSLEngine="on" 
           SSLVerifyDepth="2" 
           sslProtocol="TLS"/>
-          
-
+      ```
+    * Configure Tomcat for WebIDRealm.
+      * Download tomcat-users.rdf from the releases section of this repository and store it in ${tomcat-parent-directory}/apache-tomcat-7.0.59/conf
+      * Edit tomcat-users.rdf to give yourself the "DebugRole", replacing ${YOUR-WEB-ID} by the actual URI. Note that the "DebugRole" is already defined, it will be used later, when verifying the installation.
+      ```xml
+        <rdf:Description rdf:about="${YOUR-WEB-ID}">
+          <rdf:type rdf:resource="#User"/>
+          <webid:hasRole rdf:resource="http://data.turnguard.com/webid/2.0/DebugRole"/>
+        </rdf:Description>
+      ```
+      * Download all libraries (*.jar) from the releases section of this repository and store them in ${tomcat-parent-directory}/apache-tomcat-7.0.59/lib
+      * Edit ${tomcat-parent-directory}/apache-tomcat-7.0.59/conf/server.xml to include the WebIDDatabase (this is where WebIDRealm will look for users and roles instead of the default tomcat-users.xml). Copy the following xml snippet into the "GlobalNamingResources" section
+      ```xml
+      <Resource name="WebIDDatabase" auth="Container"
+        type="com.turnguard.rww.webid.database.WebIDDatabase"
+        description="Userdatabase graph for the WebIDRealm"
+        factory="com.turnguard.rww.webid.database.impl.openrdf.MemoryStoreFactory"
+        pathname="conf/tomcat-users.rdf" />
+      ```
+      * Edit ${tomcat-parent-directory}/apache-tomcat-7.0.59/conf/server.xml to include the WebIDRealm in the "Engine" section. Note: You should remove all other "Realm" definitions from the default "Engine" section in server.xml before.
+      ```xml
+      <Realm className="com.turnguard.rww.webid.tomcat.realm.WebIDRealm" resourceName="WebIDDatabase" validate="false"/>
+      ```
 
 
 
