@@ -52,7 +52,7 @@ This is the new parent of all com-turnguard-rww (Read Write Web) activity.
       
     * Configure Tomcat for SSL.
     
-      We will now create an APR SSL Connector inside server.xml. I'm using VIM for this. Note the in server.xml there are already a couple of connectors defined. Simply add the xml snippet (see below) right after the standard connector for port 8080 inside the "Service" section
+      We will now create an APR SSL Connector inside server.xml. I'm using VIM for this. Note that in server.xml there are already a couple of connectors defined. Simply add the xml snippet (see below) right after the standard connector for port 8080 inside the "Service" section. (Also note that there's a clean server.xml without comments in the releases section)
     
       `$ cd ${tomcat-parent-directory}/apache-tomcat-7.0.59/conf`<br/>
       `$ vim server.xml`<br/>
@@ -93,9 +93,19 @@ This is the new parent of all com-turnguard-rww (Read Write Web) activity.
       ```
       * Edit ${tomcat-parent-directory}/apache-tomcat-7.0.59/conf/server.xml to include the WebIDRealm in the "Engine" section. Note: You should remove all other "Realm" definitions from the default "Engine" section in server.xml before.
       ```xml
-      <Realm className="com.turnguard.rww.webid.tomcat.realm.WebIDRealm" resourceName="WebIDDatabase" validate="false"/>
+      <Realm className="com.turnguard.rww.webid.tomcat.realm.WebIDRealm" 
+        resourceName="WebIDDatabase" 
+        validate="false"/>
       ```
-
+    * Install Verifcation WebApp.
+      * Download the webid-verification.war file from the releases section and store it in ${tomcat-parent-directory}/apache-tomcat-7.0.59/webapps
+      * Start the server by 
+      
+        `$ cd ${tomcat-parent-directory}`<br/>
+        `$ ./bin/startup.sh`<br/>
+        
+      * Point your browser to https://localhost:8443/webid-verification
+        This should first bring up a popup that let's you choose your browser certificate. After you have chosen a certificate, you should either see an error page in case something went wrong, or a success page, displaying a couple of facts from your webID.
 
 
 [xx] http://software.opensuse.org/package/libapr1
