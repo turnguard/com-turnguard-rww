@@ -1,6 +1,8 @@
 package com.turnguard.rww.webid.security.impl;
 
 import com.turnguard.rww.webid.exceptions.DereferencingException;
+import com.turnguard.rww.webid.exceptions.ExponentDatatypeMismatchException;
+import com.turnguard.rww.webid.exceptions.ModulusDatatypeMismatchException;
 import com.turnguard.rww.webid.exceptions.NoModulusException;
 import com.turnguard.rww.webid.exceptions.NoPublicExponentException;
 import com.turnguard.rww.webid.exceptions.NoRSAPublicKeyException;
@@ -39,7 +41,7 @@ public class WebIDUserImpl extends WebIDPrincipalBase implements WebIDUser {
     }
 
     @Override
-    public Collection<RSAPublicKey> getRSAPublicKeys() throws NoRSAPublicKeyException, NoSuchSubjectException, NoModulusException, NoPublicExponentException, InvalidKeyException, DereferencingException, RDFParseException {
+    public Collection<RSAPublicKey> getRSAPublicKeys() throws NoRSAPublicKeyException, NoSuchSubjectException, NoModulusException, NoPublicExponentException, InvalidKeyException, DereferencingException, RDFParseException, ModulusDatatypeMismatchException, ExponentDatatypeMismatchException {
         if(this.principalData.containsKey(uri)){
             Collection<RSAPublicKey> rsaPublicKeys = new ArrayList<RSAPublicKey>();
             if(this.principalData.get(uri).containsKey(CERT.KEY)){

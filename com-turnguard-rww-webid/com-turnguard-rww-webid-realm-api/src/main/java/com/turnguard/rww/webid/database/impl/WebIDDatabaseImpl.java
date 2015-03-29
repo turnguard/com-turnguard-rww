@@ -13,6 +13,8 @@ import com.turnguard.rww.webid.exceptions.PublicExponentMismatchException;
 import com.turnguard.rww.webid.exceptions.UnsupportedContentTypeException;
 import com.turnguard.rww.webid.database.WebIDDatabase;
 import com.turnguard.rww.webid.database.WebIDDatabaseFactory;
+import com.turnguard.rww.webid.exceptions.ExponentDatatypeMismatchException;
+import com.turnguard.rww.webid.exceptions.ModulusDatatypeMismatchException;
 import com.turnguard.rww.webid.security.WebIDPrincipal;
 import com.turnguard.rww.webid.security.WebIDUser;
 import com.turnguard.rww.webid.security.base.WebIDPrincipalBase;
@@ -184,6 +186,12 @@ public class WebIDDatabaseImpl implements WebIDDatabase {
                             logger.debug("WebIDDatabaseImpl checking " + webIDUser + " is valid");                            
                             return webIDUser;
                         }
+                    } catch (ExponentDatatypeMismatchException ex) {
+                        this.addException(dummyURI, webIDClaim, ex, webIDStates);
+                        logger.warn(ex.getMessage(), ex);                    
+                    } catch (ModulusDatatypeMismatchException ex) {
+                        this.addException(dummyURI, webIDClaim, ex, webIDStates);
+                        logger.warn(ex.getMessage(), ex);                    
                     } catch (DereferencingException ex) {
                         this.addException(dummyURI, webIDClaim, ex, webIDStates);
                         logger.warn(ex.getMessage(), ex);                    

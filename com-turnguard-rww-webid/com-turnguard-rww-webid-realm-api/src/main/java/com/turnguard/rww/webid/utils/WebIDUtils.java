@@ -1,6 +1,8 @@
 package com.turnguard.rww.webid.utils;
 
 import com.turnguard.rww.webid.exceptions.DereferencingException;
+import com.turnguard.rww.webid.exceptions.ExponentDatatypeMismatchException;
+import com.turnguard.rww.webid.exceptions.ModulusDatatypeMismatchException;
 import com.turnguard.rww.webid.exceptions.ModulusMismatchException;
 import com.turnguard.rww.webid.exceptions.NoRSAPublicKeyException;
 import com.turnguard.rww.webid.exceptions.NoWebIDFoundException;
@@ -110,26 +112,24 @@ public class WebIDUtils {
             return false;
         }
 
-        public static BigInteger getModulus(HashSet<Value> moduli) throws RDFParseException{
+        public static BigInteger getModulus(HashSet<Value> moduli) throws ModulusDatatypeMismatchException{
             for(Value modulus : moduli){
                 Literal mod = (Literal)modulus;
-                if(!mod.getDatatype().equals(XMLSchema.HEXBINARY)){
-                    throw new RDFParseException("Found cert#modulus in WebIDProfileDocument that is not of datatype " + XMLSchema.HEXBINARY);
+                if(mod.getDatatype()==null || !mod.getDatatype().equals(XMLSchema.HEXBINARY)){
+                    throw new ModulusDatatypeMismatchException("Found cert#modulus in WebIDProfileDocument that is not of datatype " + XMLSchema.HEXBINARY);
                 }
-                mod = null;
                 BigInteger m = new BigInteger(cleanHexString(modulus.stringValue()), 16);
                 return m;
             }
             return null;
         }
 
-        public static BigInteger getExponent(HashSet<Value> exponents) throws RDFParseException{
+        public static BigInteger getExponent(HashSet<Value> exponents) throws ExponentDatatypeMismatchException{
             for(Value exponent : exponents){
                 Literal exp = (Literal)exponent;
-                if(!exp.getDatatype().equals(XMLSchema.INTEGER) && !exp.getDatatype().equals(XMLSchema.INT)){
-                    throw new RDFParseException("Found cert#exponent in WebIDProfileDocument that is not of datatype " + XMLSchema.INTEGER + " or " + XMLSchema.INT);
+                if(exp.getDatatype()==null || (!exp.getDatatype().equals(XMLSchema.INTEGER) && !exp.getDatatype().equals(XMLSchema.INT))){
+                    throw new ExponentDatatypeMismatchException("Found cert#exponent in WebIDProfileDocument that is not of datatype " + XMLSchema.INTEGER + " or " + XMLSchema.INT);
                 }
-                exp = null;
                 BigInteger e = new BigInteger(exponent.stringValue(), 10);
                 return e;
             }

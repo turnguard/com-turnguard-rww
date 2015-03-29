@@ -13,7 +13,7 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Cert Test</web-resource-name>
-            <url-pattern>/*</url-pattern>
+            <url-pattern>/*</url-pattern>            
         </web-resource-collection>
         <auth-constraint>
             <role-name>http://data.turnguard.com/webid/2.0/DebugRole</role-name>

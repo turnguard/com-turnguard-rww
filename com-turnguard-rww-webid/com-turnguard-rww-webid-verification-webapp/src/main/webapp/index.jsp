@@ -1,3 +1,4 @@
+<%@page import="com.turnguard.rww.webid.vocabulary.JAVA"%>
 <%@page import="org.openrdf.model.Value"%>
 <%@page import="org.openrdf.model.Resource"%>
 <%@page import="com.turnguard.rww.webid.vocabulary.CERT"%>
@@ -34,6 +35,15 @@
                 for(Value r : principal.get(CERT.KEY)){
                     out.print("cert:exponent => "+principal.get((Resource)r, CERT.EXPONENT)+"<br/>");
                     out.print("cert:modulus => "+principal.get((Resource)r, CERT.MODULUS)+"<br/><br/>");
+                }                
+            } catch(NoSuchPredicateException nspe){}
+        %><br/>
+        
+        java:throws => <% 
+            try { 
+                out.print(principal.get(JAVA.KEYWORD.THROWS)+"<br/>");
+                for(Value r : principal.get(JAVA.KEYWORD.THROWS)){
+                    out.print("java:ex => "+principal.get((Resource)r, JAVA.DATA.MESSAGE)+"<br/>");                    
                 }                
             } catch(NoSuchPredicateException nspe){}
         %><br/>
