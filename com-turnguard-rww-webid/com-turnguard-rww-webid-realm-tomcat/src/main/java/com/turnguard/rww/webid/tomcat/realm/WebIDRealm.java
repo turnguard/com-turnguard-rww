@@ -2,7 +2,10 @@ package com.turnguard.rww.webid.tomcat.realm;
 
 import com.turnguard.rww.webid.database.WebIDDatabase;
 import com.turnguard.rww.webid.security.WebIDPrincipal;
+import com.turnguard.rww.webid.security.base.WebIDPrincipalBase;
 import com.turnguard.rww.webid.security.impl.WebIDRoleImpl;
+import com.turnguard.rww.webid.security.impl.WebIDUserImpl;
+import com.turnguard.rww.webid.vocabulary.WEBID;
 import java.io.IOException;
 import java.security.Principal;
 import java.security.cert.X509Certificate;
@@ -11,9 +14,10 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
-import org.apache.catalina.deploy.SecurityConstraint;
+//import org.apache.catalina.deploy.SecurityConstraint;
 import org.apache.catalina.realm.RealmBase;
 import org.apache.log4j.Logger;
+import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.openrdf.model.impl.URIImpl;
 
 /**
@@ -50,6 +54,7 @@ public class WebIDRealm extends RealmBase {
     @Override
     protected Principal getPrincipal(X509Certificate usercert) {
         logger.debug("WebIDRealm getPrincipal from Certificate");
+        
         return this.database.getPrincipal(usercert);
     }
 
@@ -91,7 +96,7 @@ public class WebIDRealm extends RealmBase {
     }
 
     @Override
-    public Principal authenticate(X509Certificate[] certs) {
+    public Principal authenticate(X509Certificate[] certs) {        
         logger.debug("WebIDRealm authenticate");
         return super.authenticate(certs);
     }

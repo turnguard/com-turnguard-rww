@@ -26,6 +26,7 @@ import com.turnguard.rww.webid.vocabulary.WEBID;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
@@ -41,8 +42,10 @@ import javax.net.ssl.SSLHandshakeException;
 import javax.xml.transform.TransformerException;
 import org.apache.log4j.Logger;
 import org.openrdf.model.BNode;
+import org.openrdf.model.Literal;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
+import org.openrdf.model.impl.LiteralImpl;
 import org.openrdf.model.impl.StatementImpl;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.model.vocabulary.RDF;
@@ -192,7 +195,7 @@ public class WebIDDatabaseImpl implements WebIDDatabase {
                     } catch (ModulusDatatypeMismatchException ex) {
                         this.addException(dummyURI, webIDClaim, ex, webIDStates);
                         logger.warn(ex.getMessage(), ex);                    
-                    } catch (DereferencingException ex) {
+                    } catch (DereferencingException | URISyntaxException ex) {
                         this.addException(dummyURI, webIDClaim, ex, webIDStates);
                         logger.warn(ex.getMessage(), ex);                    
                     } catch (SSLHandshakeException ex) {
@@ -284,6 +287,7 @@ public class WebIDDatabaseImpl implements WebIDDatabase {
         org.openrdf.model.URI exceptionURI = JAVA.getURI(ex.getClass());
         states.add(new StatementImpl(uri, JAVA.KEYWORD.THROWS, bnode));
         states.add(new StatementImpl(bnode, RDF.TYPE, exceptionURI));                
+        
         if(ex.getMessage()!=null){
             states.add(new StatementImpl(bnode, JAVA.DATA.MESSAGE, this.readConnection.getValueFactory().createLiteral(ex.getMessage())));        
         }

@@ -13,6 +13,8 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
@@ -41,6 +43,7 @@ import org.openrdf.rio.RDFHandlerException;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.Rio;
+import org.openrdf.rio.helpers.RDFHandlerBase;
 import org.openrdf.rio.helpers.StatementCollector;
 
 /**
@@ -151,20 +154,32 @@ public class WebIDUtils {
 
         private final static Logger logger = Logger.getLogger(HttpUtils.class);
 
-        public static Collection<Statement> dereference(java.net.URI uri) throws IOException, RDFParseException, RDFHandlerException, TransformerException, UnsupportedContentTypeException, SSLHandshakeException, DereferencingException  {
+        public static Collection<Statement> dereference(java.net.URI uri) throws IOException, RDFParseException, RDFHandlerException, TransformerException, UnsupportedContentTypeException, SSLHandshakeException, DereferencingException, URISyntaxException  {
             logger.debug("dereferencing " + uri.toString());
             StatementCollector collector = new WebIDStatementCollector();
             HttpURLConnection connection = null;
             InputStream in = null;
-            try {
+            String acceptHeader = getAcceptHeader();
+            boolean followed = false;
+            try {                
                 if(uri.getScheme().equals("https")){
                     connection = (HttpsURLConnection) uri.toURL().openConnection();
                 } else {
                     connection = (HttpURLConnection) uri.toURL().openConnection();
-                }
-                connection.setInstanceFollowRedirects(true);
-                connection.addRequestProperty("Accept", getAcceptHeader());
-                if(uri.toString().indexOf("#")==-1 && connection.getResponseCode()==200 && connection.getURL().equals(uri.toURL())){
+                    int stat = connection.getResponseCode();                    
+                    if(stat >= 300 && stat <= 307 && stat != 306 && stat != HttpURLConnection.HTTP_NOT_MODIFIED){
+                      if(uri.getScheme().equals("http") && connection.getHeaderField("Location").startsWith("https")){
+                        connection.disconnect();
+                        uri = new URL(connection.getHeaderField("Location")).toURI();
+                        connection = (HttpsURLConnection)uri.toURL().openConnection();
+                      }
+                      followed = true;
+                    }   
+                }                
+                connection.addRequestProperty("Accept", acceptHeader);                
+                connection.setInstanceFollowRedirects(true);  
+                
+                if(!followed && uri.toString().indexOf("#")==-1 && connection.getResponseCode()==200 && connection.getURL().equals(uri.toURL())){
                     throw new com.turnguard.rww.webid.exceptions.DereferencingException(uri + " is not a URI but a URL");
                 }
                 in = connection.getInputStream();
@@ -185,11 +200,12 @@ public class WebIDUtils {
                 if(foafFormat==null){
                     throw new UnsupportedContentTypeException("Content-Type : " + mimeType +" is not supported");
                 }
+                
                 RDFParser parser = Rio.createParser(foafFormat);
                 parser.setRDFHandler(collector);
                 parser.setPreserveBNodeIDs(true);
-
                 parser.parse(in, base(uri.toString()));
+                
             } finally {
                 if (in != null) {
                     in.close();
